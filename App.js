@@ -8,7 +8,13 @@ import MoveDetails from './screens/moveDetails';
 import {useState, useEffect} from 'react'
 import * as ImagePicker from "expo-image-picker"
 import AsyncStorage from "@react-native-async-storage/async-storage"
+import { Video } from 'expo-av';
+
+
+
 function HomeScreen({ navigation }) {
+  const video = React.useRef(null);
+  const [status, setStatus] = React.useState({});
 
   //ASYNC STUFF
   const saveImage =async(imageUri)=>{
@@ -65,7 +71,7 @@ const deleteName=()=>{
 
   const pickImage =async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:ImagePicker.MediaTypeOptions.Images,
+      mediaTypes:ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect:[4,3],
       quality:1,
@@ -91,6 +97,17 @@ const deleteName=()=>{
       <View>
         <Button title="pick Image" onPress={() => pickImage()}/>
         <Image source={{uri:image}} style={{flex:1/2}}/>
+        <Video
+        ref={video}
+        style={{flex:1/2}}
+        source={{
+          uri:image
+        }}
+        useNativeControls
+        resizeMode="contain"
+        isLooping
+        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      />
       </View>
       <Button
         title="Moves"
